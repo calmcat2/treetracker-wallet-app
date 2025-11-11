@@ -1,0 +1,63 @@
+name: Comprehensive tests for New Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: prepare .env for web module
+        run: |
+          echo "NEXT_PUBLIC_WALLET_APP_API=${{ secrets.NEXT_PUBLIC_WALLET_APP_API }}" > ./apps/web/.env
+          echo "NEXT_PUBLIC_ENV=${{ secrets.NEXT_PUBLIC_ENV }}" >> ./apps/web/.env
+          echo "NEXT_PUBLIC_API_TIMEOUT=${{ secrets.NEXT_PUBLIC_API_TIMEOUT }}" >> ./apps/web/.env
+          echo "NEXT_PUBLIC_API_RETRIES=${{ secrets.NEXT_PUBLIC_API_RETRIES }}" >> ./apps/web/.env
+          echo "NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}" >> ./apps/web/.env
+
+      - name: prepare .env for user module
+        run: |
+          echo "PRIVATE_KEYCLOAK_REALM=${{ secrets.PRIVATE_KEYCLOAK_REALM }}" > ./apps/user/.env
+          echo "PRIVATE_KEYCLOAK_BASE_URL=${{ secrets.PRIVATE_KEYCLOAK_BASE_URL }}" >> ./apps/user/.env
+          echo "PRIVATE_KEYCLOAK_CLIENT_SECRET=${{ secrets.PRIVATE_KEYCLOAK_CLIENT_SECRET }}" >> ./apps/user/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./apps/user/.env
+          echo "PRIVATE_KEYCLOAK_CLIENT_ID=${{ secrets.PRIVATE_KEYCLOAK_CLIENT_ID }}" >> ./apps/user/.env
+          echo "PRIVATE_WALLET_API_KEY=${{ secrets.PRIVATE_WALLET_API_KEY }}" >> ./apps/user/.env
+          echo "CORS_ORIGINS_DEV=${{ secrets.CORS_ORIGINS_DEV }}" >> ./apps/user/.env
+          echo "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" >> ./apps/user/.env
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Lint Tests
+        run: yarn lint:check
+
+      - name: Run Unit Tests
+        run: yarn user:test:unit
+
+      - name: Run Integration Tests
+        run: yarn user:test:int
+
+      - name: Run User Service E2E Tests
+        run: yarn user:test:e2e
+
+      - name: Run Cypress E2E Tests
+        uses: cypress-io/github-action@v6
+        with:
+          install-command: yarn install --frozen-lockfile
+          command: yarn cypress-e2e-headless-test
