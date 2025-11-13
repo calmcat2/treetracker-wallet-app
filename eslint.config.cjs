@@ -15,6 +15,36 @@ const tsParser = require("@typescript-eslint/parser");
 const prettierPlugin = require("eslint-plugin-prettier");
 const expoConfig = require("eslint-config-expo/flat");
 
+// Inject our small TypeScript rule overrides into the Expo TypeScript config
+// rather than redefining the plugin elsewhere (ESLint flat config requires
+// plugin rules to be defined in the same config object that defines the plugin).
+try {
+  const tsOverrideRules = {
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-require-imports': 'warn',
+  };
+
+  const tsIndex = expoConfig.findIndex((cfg) => Array.isArray(cfg.files) && cfg.files.includes('**/*.ts'));
+  if (tsIndex !== -1) {
+    expoConfig[tsIndex].rules = Object.assign({}, expoConfig[tsIndex].rules || {}, tsOverrideRules);
+  } else {
+    // if expo doesn't include a ts block for some reason, add one that defines the plugin
+    const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+    const tsParser = require('@typescript-eslint/parser');
+    expoConfig.push({
+      files: ['**/*.ts', '**/*.tsx', '**/*.d.ts'],
+      plugins: { '@typescript-eslint': typescriptEslint },
+      languageOptions: { parser: tsParser },
+      rules: tsOverrideRules,
+    });
+  }
+} catch (e) {
+  // if anything goes wrong while mutating expoConfig, fall back silently
+  // — we don't want to crash linting. Log to console for debugging.
+  // eslint-disable-next-line no-console
+  console.error('Failed to apply TS overrides to expoConfig:', e && e.message);
+}
+
 // 🔧 Only include tsconfig.json files that exist
 const tsProjects = [
   "./packages/core/tsconfig.json",
@@ -70,8 +100,8 @@ module.exports = [
       "react-hooks/exhaustive-deps": "warn",
 
       // TypeScript rules (plugin already included via Expo)
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-      "@typescript-eslint/no-require-imports": "warn",
+      // "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      // "@typescript-eslint/no-require-imports": "warn",
 
       // General JS/TS rules
       "no-undef": "off",

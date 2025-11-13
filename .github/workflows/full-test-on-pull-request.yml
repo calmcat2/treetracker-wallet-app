@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  Full tests:
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
@@ -57,7 +57,7 @@ jobs:
         continue-on-error: true
 
       - name: Run User Service E2E Tests
-        run: yarn user:test:e2e
+        run: yarn user:test:e2e --forceExit
         continue-on-error: true
 
       - name: Run Cypress E2E Tests
