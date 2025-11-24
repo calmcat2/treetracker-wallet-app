@@ -10,7 +10,8 @@ on:
     paths:
       - "apps/web/**"
       - ".github/workflows/ci-cd-pr-web-wallet.yml"
-      - "!**/*.md"
+    paths-ignore:
+      - "**/*.md"
   workflow_dispatch:
 
 jobs:
@@ -48,15 +49,11 @@ jobs:
 
       - name: Start user service in the background
         run: |
-          yarn user:dev &
-          sleep 5
+          yarn user:dev &>/dev/null & npx wait-on tcp:8080
 
       - name: Run component test
         uses: cypress-io/github-action@v6
         with:
-          command: yarn cypress-component-test
-
-      - name: Run Cypress E2E Tests
-        uses: cypress-io/github-action@v6
-        with:
-          command: yarn cypress-e2e-headless-test
+          command: |
+            yarn cypress-component-test
+            yarn cypress-e2e-headless-test
