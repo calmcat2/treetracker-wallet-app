@@ -53,6 +53,4 @@ jobs:
       - name: Run component test
         uses: cypress-io/github-action@v6
         with:
-          command: |
-            yarn cypress-component-test
-            yarn cypress-e2e-headless-test
+          command: yarn cypress-component-test && yarn cypress-e2e-headless-test
