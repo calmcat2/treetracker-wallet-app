@@ -10,8 +10,7 @@ on:
     paths:
       - "apps/web/**"
       - ".github/workflows/ci-cd-pr-web-wallet.yml"
-    paths-ignore:
-      - "**/*.md"
+      - "!**/*.md"
   workflow_dispatch:
 
 jobs:
