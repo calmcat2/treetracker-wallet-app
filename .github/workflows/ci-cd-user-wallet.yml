@@ -21,7 +21,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       PRIVATE_KEYCLOAK_CLIENT_ID: ${{ secrets.PRIVATE_KEYCLOAK_CLIENT_ID }}
       PRIVATE_WALLET_API_KEY: ${{ secrets.PRIVATE_WALLET_API_KEY }}
-      CORS_ORIGINS: ${{ vars.CORS_ORIGINS }}
+      CORS_ORIGINS_DEV: ${{ vars.CORS_ORIGINS_DEV }}
 
     steps:
       - uses: actions/checkout@v4
