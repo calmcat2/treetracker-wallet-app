@@ -1,12 +1,12 @@
 # This workflow triggers on pull requests that modify non-Markdown files in the User module (apps/user/**).
-# It runs component and end-to-end (E2E) tests to validate those changes.
+# It runs e2e, integration and unit tests to validate those changes.
 
-name: PR for USER module
+name: PR CI for User module
 
 on:
   pull_request:
     paths:
-      - apps/user/** # Only run when there are changes in user modules.
+      - apps/user/**
       - "!apps/user/**/*.md"
   workflow_dispatch:
 
