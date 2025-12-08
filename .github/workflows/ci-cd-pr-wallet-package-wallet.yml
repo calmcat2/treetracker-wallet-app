@@ -45,4 +45,4 @@ jobs:
 
       - name: Run e2e test for wallet package
         run: |
-          yarn workspace @packages/wallet test
+          yarn workspace @treetracker/wallet test
