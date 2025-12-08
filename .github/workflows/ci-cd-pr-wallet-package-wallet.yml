@@ -1,7 +1,7 @@
 # This workflow triggers on pull requests that modify files (other than *.md) in the wallet package (i.e., package/wallet/**)
 # It runs e2e tests to validate changes.
 
-name: PR CI Wallet Package
+name: PR CI for Wallet Package
 
 on:
   pull_request:
@@ -45,4 +45,4 @@ jobs:
 
       - name: Run e2e test for wallet package
         run: |
-          yarn workspace packages/wallet test
+          yarn workspace @packages/wallet test
