@@ -1,4 +1,4 @@
-# This workflow triggers on pull requests that modify files (other than .md) in the wallet package (i.e., package/wallet/**)
+# This workflow triggers on pull requests that modify files (other than *.md) in the wallet package (i.e., package/wallet/**)
 # It runs e2e tests to validate changes.
 
 name: PR CI Wallet Package
@@ -43,13 +43,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Start user and web services in background
-        run: |
-          yarn user:dev &
-          yarn web:dev &
-          npx wait-on tcp:8080 tcp:3000 --timeout 30000
-
       - name: Run e2e test for wallet package
         run: |
-          cd packages/wallet
-          yarn test
+          yarn workspace packages/wallet test
