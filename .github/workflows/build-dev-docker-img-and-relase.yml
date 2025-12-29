@@ -36,15 +36,21 @@ jobs:
         working-directory: ${{ env.project-directory }}
 
       - name: Run semantic-release
+        run: npm i -g semantic-release @semantic-release/{git,exec,changelog}
+      - run: semantic-release --branches semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: 0
-        run: |
-          npx --package semantic-release@latest \
-              --package @semantic-release/commit-analyzer@latest \
-              --package @semantic-release/release-notes-generator@latest \
-              --package @semantic-release/changelog@latest \
-              --package @semantic-release/npm@latest \
-              --package @semantic-release/git@latest \
-              --package @semantic-release/github@latest \
-              semantic-release --branches semantic
+
+      # - name: Run semantic-release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     HUSKY: 0
+      #   run: |
+      #     npx --package semantic-release@latest \
+      #         --package @semantic-release/commit-analyzer@latest \
+      #         --package @semantic-release/release-notes-generator@latest \
+      #         --package @semantic-release/changelog@latest \
+      #         --package @semantic-release/npm@latest \
+      #         --package @semantic-release/git@latest \
+      #         --package @semantic-release/github@latest \
+      #         semantic-release --branches semantic
