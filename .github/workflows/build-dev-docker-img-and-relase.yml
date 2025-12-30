@@ -53,4 +53,4 @@ jobs:
               --package @semantic-release/npm@latest \
               --package @semantic-release/git@latest \
               --package @semantic-release/github@latest \
-              semantic-release --branches semantic
+              semantic-release 
