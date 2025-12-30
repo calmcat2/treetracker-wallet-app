@@ -34,28 +34,23 @@ jobs:
           yarn install --immutable
         working-directory: ${{ env.project-directory }}
 
-      # Installs the same plugins configured in .releaserc.js
-      - name: Install semantic-release (global)
-        run: |
-          npm i -g semantic-release \
-            @semantic-release/commit-analyzer \
-            @semantic-release/release-notes-generator \
-            @semantic-release/changelog \
-            @semantic-release/npm \
-            @semantic-release/git \
-            @semantic-release/github
+      # - name: Run semantic-release
+      #   run: npm i -g semantic-release @semantic-release/{git,exec,changelog}
+      # - run: semantic-release --branches semantic
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     HUSKY: 0
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HUSKY: 0
         run: |
-          yarn dlx \
-            -p semantic-release@latest \
-            -p @semantic-release/commit-analyzer@latest \
-            -p @semantic-release/release-notes-generator@latest \
-            -p @semantic-release/changelog@latest \
-            -p @semantic-release/npm@latest \
-            -p @semantic-release/git@latest \
-            -p @semantic-release/github@latest \
-            semantic-release
+          npx --package semantic-release@latest \
+              --package @semantic-release/commit-analyzer@latest \
+              --package @semantic-release/release-notes-generator@latest \
+              --package @semantic-release/changelog@latest \
+              --package @semantic-release/npm@latest \
+              --package @semantic-release/git@latest \
+              --package @semantic-release/github@latest \
+              semantic-release --branches semantic
